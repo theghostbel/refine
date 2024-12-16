@@ -16,7 +16,7 @@ const RefineMantineDemo: React.FC<
   Partial<RefineProps> & {
     initialRoutes?: string[];
   }
-> = ({ initialRoutes, ...rest }) => {
+> = ({ initialRoutes, children, ...rest }) => {
   if (initialRoutes) {
     RefineCommonScope.setInitialRoutes(initialRoutes);
   }
@@ -28,25 +28,24 @@ const RefineMantineDemo: React.FC<
       withGlobalStyles
     >
       <MantineCore.Global styles={{ body: { WebkitFontSmoothing: "auto" } }} />
-      <RefineCommonScope.RefineCore.Refine
-        legacyRouterProvider={
-          RefineCommonScope.LegacyRefineReactRouterV6.default
-        }
-        dataProvider={RefineCommonScope.RefineSimpleRest.default(
-          SIMPLE_REST_API_URL,
-        )}
-        notificationProvider={RefineMantine.notificationProvider}
-        Layout={RefineMantine.Layout}
-        Sider={() => null}
-        catchAll={<RefineMantine.ErrorComponent />}
-        options={{
-          disableTelemetry: true,
-          reactQuery: {
-            devtoolConfig: false,
-          },
-        }}
-        {...rest}
-      />
+      <MantineNotifications.NotificationsProvider position="top-right">
+        <RefineCommonScope.RefineCore.Refine
+          routerProvider={RefineCommonScope.RefineReactRouter.default}
+          dataProvider={RefineCommonScope.RefineSimpleRest.default(
+            SIMPLE_REST_API_URL,
+          )}
+          notificationProvider={RefineMantine.useNotificationProvider}
+          options={{
+            disableTelemetry: true,
+            reactQuery: {
+              devtoolConfig: false,
+            },
+          }}
+          {...rest}
+        >
+          {children}
+        </RefineCommonScope.RefineCore.Refine>
+      </MantineNotifications.NotificationsProvider>
     </MantineCore.MantineProvider>
   );
 };

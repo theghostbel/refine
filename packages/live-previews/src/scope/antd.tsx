@@ -28,17 +28,14 @@ const RefineAntdDemo: React.FC<
   if (initialRoutes) {
     RefineCommonScope.setInitialRoutes(initialRoutes);
   }
-
+  ("");
   return (
     <RefineCommonScope.RefineCore.Refine
-      legacyRouterProvider={RefineCommonScope.LegacyRefineReactRouterV6.default}
+      routerProvider={RefineCommonScope.RefineReactRouter.default}
       dataProvider={RefineCommonScope.RefineSimpleRest.default(
         SIMPLE_REST_API_URL,
       )}
-      notificationProvider={RefineAntd.notificationProvider}
-      Layout={RefineAntd.Layout}
-      Sider={() => null}
-      catchAll={<RefineAntd.ErrorComponent />}
+      notificationProvider={RefineAntd.useNotificationProvider}
       options={{
         disableTelemetry: true,
         reactQuery: {

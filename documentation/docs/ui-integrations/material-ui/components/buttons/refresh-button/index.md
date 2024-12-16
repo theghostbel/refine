@@ -13,32 +13,32 @@ You can swizzle this component with the [**Refine CLI**](/docs/packages/list-of-
 
 ## Usage
 
-```tsx live url=http://localhost:3000/posts previewHeight=340px
-// visible-block-start
-import { useShow } from "@refinedev/core";
-// highlight-next-line
-import { Show, RefreshButton } from "@refinedev/mui";
-import { Typography, Stack } from "@mui/material";
+```tsx live previewHeight=340px
+setInitialRoutes(["/posts"]);
 
-const PostShow: React.FC = () => {
-  const { queryResult } = useShow<IPost>();
-  const { data, isLoading } = queryResult;
-  const record = data?.data;
+// visible-block-start
+import {
+  useDataGrid,
+  List,
+  // highlight-next-line
+  RefreshButton,
+} from "@refinedev/mui";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+
+const columns: GridColDef[] = [
+  { field: "id", headerName: "ID", type: "number" },
+  { field: "title", headerName: "Title", minWidth: 400, flex: 1 },
+];
+
+const PostsList: React.FC = () => {
+  const { dataGridProps } = useDataGrid<IPost>();
 
   return (
-    <Show
-      isLoading={isLoading}
-      headerButtons={
-        // highlight-start
-        <RefreshButton />
-        // highlight-end
-      }
-    >
-      <Typography fontWeight="bold">Id</Typography>
-      <Typography>{record?.id}</Typography>
-      <Typography fontWeight="bold">Title</Typography>
-      <Typography>{record?.title}</Typography>
-    </Show>
+    <List>
+      {/* highlight-next-line */}
+      <RefreshButton />
+      <DataGrid {...dataGridProps} columns={columns} />
+    </List>
   );
 };
 
@@ -49,20 +49,22 @@ interface IPost {
 // visible-block-end
 
 render(
-  <RefineMuiDemo
-    initialRoutes={["/posts/show/123"]}
-    resources={[
-      {
-        name: "posts",
-        list: () => (
-          <RefineMui.List>
-            <p>Rest of the page here...</p>
-          </RefineMui.List>
-        ),
-        show: PostShow,
-      },
-    ]}
-  />,
+  <ReactRouter.BrowserRouter>
+    <RefineMuiDemo
+      resources={[
+        {
+          name: "posts",
+          list: "/posts",
+        },
+      ]}
+    >
+      <ReactRouter.Routes>
+        <ReactRouter.Route path="/posts" element={<ReactRouter.Outlet />}>
+          <ReactRouter.Route index element={<PostsList />} />
+        </ReactRouter.Route>
+      </ReactRouter.Routes>
+    </RefineMuiDemo>
+  </ReactRouter.BrowserRouter>,
 );
 ```
 

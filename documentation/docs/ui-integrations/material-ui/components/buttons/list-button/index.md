@@ -13,58 +13,44 @@ You can swizzle this component with the [**Refine CLI**](/docs/packages/list-of-
 
 ## Usage
 
-```tsx live url=http://localhost:3000/posts previewHeight=340px
+```tsx live previewHeight=340px
+setInitialRoutes(["/posts/create"]);
+
 // visible-block-start
-import { useShow } from "@refinedev/core";
-// highlight-next-line
-import { ListButton, Show } from "@refinedev/mui";
-import { Typography, Stack } from "@mui/material";
+import { Create, ListButton } from "@refinedev/mui";
 
-const PostShow: React.FC = () => {
-  const { queryResult } = useShow<IPost>();
-  const { data, isLoading } = queryResult;
-  const record = data?.data;
-
+const PostCreate: React.FC = () => {
   return (
-    <Show
-      isLoading={isLoading}
-      headerButtons={
-        // highlight-start
-        <ListButton />
-        // highlight-end
-      }
-    >
-      <Stack gap="10px">
-        <Typography fontWeight="bold">Id</Typography>
-        <Typography>{record?.id}</Typography>
-        <Typography fontWeight="bold">Title</Typography>
-        <Typography>{record?.title}</Typography>
-      </Stack>
-    </Show>
+    <Create headerButtons={<ListButton />}>Rest of the page here...</Create>
   );
 };
-
-interface IPost {
-  id: number;
-  title: string;
-}
 // visible-block-end
 
 render(
-  <RefineMuiDemo
-    initialRoutes={["/posts/show/123"]}
-    resources={[
-      {
-        name: "posts",
-        list: () => (
-          <RefineMui.List>
-            <p>Rest of the page here...</p>
-          </RefineMui.List>
-        ),
-        show: PostShow,
-      },
-    ]}
-  />,
+  <ReactRouter.BrowserRouter>
+    <RefineMuiDemo
+      resources={[
+        {
+          name: "posts",
+          list: "/posts",
+          create: "/posts/create",
+        },
+      ]}
+    >
+      <ReactRouter.Routes>
+        <ReactRouter.Route
+          path="/posts"
+          element={
+            <div style={{ padding: 16 }}>
+              <ReactRouter.Outlet />
+            </div>
+          }
+        >
+          <ReactRouter.Route path="create" element={<PostCreate />} />
+        </ReactRouter.Route>
+      </ReactRouter.Routes>
+    </RefineMuiDemo>
+  </ReactRouter.BrowserRouter>,
 );
 ```
 
@@ -137,13 +123,7 @@ const { useRouterContext } = RefineCore;
 import { ListButton } from "@refinedev/mui";
 
 const MyListComponent = () => {
-  return (
-    <ListButton
-      resourceNameOrRouteName="posts"
-      // highlight-next-line
-      hideText
-    />
-  );
+  return <ListButton resource="posts" hideText />;
 };
 
 // visible-block-end
